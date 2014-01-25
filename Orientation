@@ -1,0 +1,322 @@
+--By Filip Farkaš 
+--Free to use
+--https://github.com/FilFar
+os.pullEvent = os.pullEventRaw
+
+--Beginning:
+term.clear()
+term.setCursorPos (1,1)
+print "Build Turtle on X axis direction, when Turtle goes forward she add +1 on x axis."
+print " "
+print "Press 'y' to continue"
+event, p1 = os.pullEvent("char")
+
+if event == "char" and p1 == "y" then
+
+	term.clear()
+	term.setCursorPos (1,1)
+	print "Write a message that will be displayed when the Turtle will be in finish:"
+	print ("Message: ")
+	term.setCursorPos (9,3)
+	final = tostring(read())
+
+	term.clear()
+	term.setCursorPos (1,1)
+	print "Turtle xyz coordinates:"
+	print ("x:")
+	term.setCursorPos (4,2)
+	x = tonumber(read())
+	print ("y:")
+	term.setCursorPos (4,3)
+	y = tonumber(read())
+	print ("z:")
+	term.setCursorPos (4,4)
+	z = tonumber(read())
+
+	term.clear()
+	term.setCursorPos (1,1)
+	print "Place xyz coordinates:"
+	print ("x:")
+	term.setCursorPos (4,2)
+	gox = tonumber(read())
+	print ("y:")
+	term.setCursorPos (4,3)
+	goy = tonumber(read())
+	print ("z:")
+	term.setCursorPos (4,4)
+	goz = tonumber(read())
+
+	--Kontrola paliva:
+	tx = x
+	tgox = gox
+	tz = z
+	tgoz = goz
+	if goy > y then zostatoky = goy - y else zostatoky = y - goy end
+	if tgox > tx then zostatokx = tgox - tx else zostatokx = tx - tgox end
+	if tgoz > tz then zostatokz = tgoz - tz else zostatokz = tz - tgoz end
+	math.abs(zostatokz)
+	math.abs(zostatokx)
+	totalfuel = zostatokz + zostatokx + zostatoky
+	totaltotal = totalfuel + turtle.getFuelLevel()
+	totalcoal = math.floor(totalfuel/80)
+	totalcoal = totalcoal + 2
+	if totalfuel < turtle.getFuelLevel() then
+	else
+		totalfuel = totalfuel - turtle.getFuelLevel()
+		if totalcoal <= 64 then
+			ter = false
+		else
+			ter = true
+			coal = 0
+			while totalcoal >= 64 do
+				totalcoal = totalcoal - 64
+				coal = coal + 1
+			end
+		end
+		
+		term.clear()
+		term.setCursorPos (1,1)
+		if ter == true then
+			if totalcoal == 0 then
+				print ("Turtle need "..coal.."x64 coal. Put coal in the inventory of Turtle!")
+			else
+				print ("Turtle need "..coal.."x64 + "..totalcoal.." coal. Put coal in the inventory of Turtle!")
+			end
+		else
+			print ("Turtle need "..totalcoal.." coal. Put coal in the inventory of Turtle!")
+		end
+		print ("Turtle need: "..totaltotal.." fuel")
+		while turtle.getFuelLevel() < totaltotal do
+			for l = 1,16 do
+				turtle.select(l)
+				turtle.refuel(64)
+				term.setCursorPos (1,4)
+				print ("Palivo: "..turtle.getFuelLevel().."")
+				if turtle.getFuelLevel() > totaltotal then
+					turtle.select(1)
+				end
+			end
+		end
+	end
+	
+	--Timeout of Turtle:
+	for i=1,5 do
+		term.clear()
+		term.setCursorPos (1,1)
+		print ("Turtle will start in 5 second!")
+		term.setCursorPos (1,2)
+		print (i)
+		sleep(1)
+	end
+	
+	term.clear()
+	term.setCursorPos (1,1)
+	print ("I'm going from: ")
+	print ("x:"..x)
+	print ("y:"..y)
+	print ("z:"..z)
+	term.setCursorPos (21,1)
+	print ("To: ")
+	term.setCursorPos (21,2)
+	print ("x:"..gox)
+	term.setCursorPos (21,3)
+	print ("y:"..goy)
+	term.setCursorPos (21,4)
+	print ("z:"..goz)
+end
+
+function goto(gox, goy, goz, x, y, z)
+
+	testgox = tonumber(gox)
+	testgoz = tonumber(goz)
+	
+	testx = tonumber(x)
+	testz = tonumber(z)
+	
+	tx = x
+	tgox = gox
+	tz = z
+	tgoz = goz
+	
+	--Calculate distance:
+	if goy > y then zostatoky = goy - y else zostatoky = y - goy end
+	if tgox > tx then zostatokx = tgox - tx else zostatokx = tx - tgox end
+	if tgoz > tz then zostatokz = tgoz - tz else zostatokz = tz - tgoz end
+	
+	math.abs(zostatokx)
+	math.abs(zostatokz)
+	
+	xp = 1
+	xm = 2
+	zp = 3
+	zm = 4
+	curOrientation = xp
+	
+	--Function to work properly:
+	function go()
+		if turtle.forward() == false then
+			up()
+			return false
+		else
+			if turtle.detectDown() == false then down() end
+			if curOrientation == xp then x = x+1
+			elseif curOrientation == xm then x = x-1
+			elseif curOrientation == zp then z = z+1
+			elseif curOrientation == zm then z = z-1 end
+			return true
+		end
+	end
+	function left()
+		turtle.turnLeft()
+		if curOrientation == xp then curOrientation = zm
+		elseif curOrientation == xm then curOrientation = zp
+		elseif curOrientation == zp then curOrientation = xp
+		elseif curOrientation == zm then curOrientation = xm end
+	end
+	function right()
+		turtle.turnRight()
+		if curOrientation == xp then curOrientation = zp
+		elseif curOrientation == xm then curOrientation = zm
+		elseif curOrientation == zp then curOrientation = xm
+		elseif curOrientation == zm then curOrientation = xp end
+	end
+	function back()
+		if turtle.forward() == false then
+			turtle.dig()
+			return false
+		else
+			if curOrientation == xp then x = x-1
+			elseif curOrientation == xm then x = x+1
+			elseif curOrientation == zp then x = z-1
+			elseif curOrientation == zm then x = z+1 end
+		end
+	end
+	function up()
+		if turtle.up() == true then
+			y = y+1
+			return true
+		else
+			turtle.digUp()
+			return false
+		end
+	end
+	function down()
+		if turtle.down() == true then
+			y = y-1
+			return true
+		else
+			turtle.digDown()
+			return false
+		end
+	end
+	
+	--Function which turns the Turtle to the right place:
+	function Smer()
+		xsmer = false
+		zsmer = false
+		
+		if testgox > testx then xsmer = true end
+		if testgoz > testz then zsmer = true end
+		
+		if xsmer == false and zsmer == false then 
+			left()
+			left()
+		elseif xsmer == false and zsmer == true then
+			right()
+		elseif xsmer == true and zsmer == false then
+			left()
+		elseif xsmer == true and zsmer == true then 
+		end
+	end
+	
+	function ud()
+		if goy > y then
+			return true
+		else
+			return false
+		end
+	end
+	
+	--Writing actual data:
+	function current(x, y, z)
+		term.clearLine(1,7)
+		term.clearLine(1,8)
+		term.clearLine(1,9)
+		term.setCursorPos(1,6)
+		print "Aktualne som na:"
+		print ("x: "..x)
+		print ("y: "..y)
+		print ("z: "..z)
+		term.setCursorPos(21,6)
+		print ("Do ciela zostava:")
+		term.setCursorPos(21,7)
+		totalfuel = zostatokz + zostatokx + zostatoky
+		print (totalfuel.." blocks")
+		term.setCursorPos(21,8)
+		print ("Palivo turtli:")
+		term.setCursorPos(21,9)
+		print (turtle.getFuelLevel())
+	end
+	
+	--Core of Turtle program:
+	Smer()
+	while true do
+		if curOrientation == xp or curOrientation == xm then
+			while zostatokx > 0 do
+				if go() == true then zostatokx = zostatokx - 1 else end
+				current(x, y, z)
+			end
+			right()
+			while zostatokz > 0 do
+				if go() == true then zostatokz = zostatokz - 1 else end
+				current(x, y, z)
+			end
+		else
+			while zostatokz > 0 do
+				if go() == true then zostatokz = zostatokz - 1 else end
+				current(x, y, z)
+			end
+			right()
+			while zostatokx > 0 do
+				if go() == true then zostatokx = zostatokx - 1 else end
+				current(x, y, z)
+			end
+		end
+		if goy > y then zostatoky = goy - y else zostatoky = y - goy end
+		if ud() == true then
+			while zostatoky > 0 do
+				zostatoky = zostatoky - 1
+				up()
+				current(x, y, z)
+			end
+		else
+			while zostatoky > 0 do
+				zostatoky = zostatoky - 1
+				down()
+				current(x, y, z)
+			end
+		break
+		end
+	end
+	
+	--At the finish Turtle will turn XP:
+	while curOrientation ~= xp do
+		right()
+		current(x, y, z)
+	end
+	
+	--The end of code - Turtle checking right coordinates:
+	term.clear()
+	if zostatokx == 0 and zostatokz == 0 and zostatoky == 0 then
+		term.setCursorPos(1,1)
+		print("Turtla uspesne dorazila na miesto so spravou:")
+		print(final)
+	else
+		term.setCursorPos(1,1)
+		print("Nastala necakana chyba!")
+		print("Turtla nedorazila spravne do ciela!")
+	end
+end
+
+--Start of all program (function):
+goto(gox, goy, goz, x, y, z)
