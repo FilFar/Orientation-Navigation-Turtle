@@ -46,7 +46,7 @@ if event == "char" and p1 == "y" then
 	term.setCursorPos (4,4)
 	goz = tonumber(read())
 
-	--Kontrola paliva:
+	--Fuel control:
 	tx = x
 	tgox = gox
 	tz = z
