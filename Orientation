@@ -243,17 +243,17 @@ function goto(gox, goy, goz, x, y, z)
 		term.clearLine(1,8)
 		term.clearLine(1,9)
 		term.setCursorPos(1,6)
-		print "Aktualne som na:"
+		print "I am on:"
 		print ("x: "..x)
 		print ("y: "..y)
 		print ("z: "..z)
 		term.setCursorPos(21,6)
-		print ("Do ciela zostava:")
+		print ("To the target remains:")
 		term.setCursorPos(21,7)
 		totalfuel = zostatokz + zostatokx + zostatoky
 		print (totalfuel.." blocks")
 		term.setCursorPos(21,8)
-		print ("Palivo turtli:")
+		print ("Turtle fuel:")
 		term.setCursorPos(21,9)
 		print (turtle.getFuelLevel())
 	end
